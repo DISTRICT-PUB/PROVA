@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const audioWin = document.getElementById("audio-win");
 
   // Variabile di configurazione per abilitare/disabilitare il blocco settimanale
-  const weeklyBlockEnabled = true;  // Imposta a 'false' per disabilitare il blocco settimanale
+  const weeklyBlockEnabled = false;  // Imposta a 'false' per disabilitare il blocco settimanale
 
   function getPrize() {
     const r = Math.random();
@@ -122,3 +122,4 @@ document.addEventListener("DOMContentLoaded", () => {
     whatsappLink.click(); 
   });
 });
+
