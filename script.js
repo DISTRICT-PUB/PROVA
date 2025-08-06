@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     { symbol: "🥃", prize: "Chupito", chance: 0.40 }
   ];
 
-  const winChance = 0.3;
+  const winChance = 0.4;
 
   const reels = [
     document.getElementById("reel1"),
