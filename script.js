@@ -1,3 +1,4 @@
+const symbols = ["🎮", "🍻", "🍺", "🍷", "🎟️"];
 const prizeProbabilities = [
   { prize: "🎮 Partita ai giochi", probability: 0.25 },
   { prize: "🍻 Birra piccola", probability: 0.30 },
@@ -11,26 +12,41 @@ function getRandomPrize() {
   let sum = 0;
   for (const item of prizeProbabilities) {
     sum += item.probability;
-    if (rand <= sum) {
-      return item.prize;
-    }
+    if (rand <= sum) return item.prize;
   }
-  return null; // Nessuna vincita
+  return null;
 }
 
-function playSlot() {
-  const result = getRandomPrize();
-  if (result) {
-    document.getElementById("result").innerHTML =
-      "🎉 Complimenti! Hai vinto: <strong>" + result + "</strong>";
-    document.getElementById("form").classList.remove("hidden");
-    document.getElementById("prize").value = result;
-  } else {
-    document.getElementById("result").innerHTML =
-      "😅 Non hai vinto... <strong>MA UN CHUPITO TE LO OFFRIAMO LO STESSO!</strong>";
-    document.getElementById("form").classList.remove("hidden");
-    document.getElementById("prize").value = "🥃 Chupito (offerto)";
-  }
+function startSlot() {
+  let count = 0;
+  const max = 20;
+  const interval = setInterval(() => {
+    document.getElementById("reel1").textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    document.getElementById("reel2").textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    document.getElementById("reel3").textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    count++;
+    if (count >= max) {
+      clearInterval(interval);
+      handleSlotResult();
+    }
+  }, 100);
+}
+
+function handleSlotResult() {
+  const prize = getRandomPrize();
+  setTimeout(() => {
+    if (prize) {
+      document.getElementById("result").innerHTML =
+        "🎉 Complimenti! Hai vinto: <strong>" + prize + "</strong>";
+      document.getElementById("form").style.display = "block";
+      document.getElementById("prize").value = prize;
+    } else {
+      document.getElementById("result").innerHTML =
+        "😅 Non hai vinto... <strong>MA UN CHUPITO TE LO OFFRIAMO LO STESSO!</strong>";
+      document.getElementById("form").style.display = "block";
+      document.getElementById("prize").value = "🥃 Chupito (offerto)";
+    }
+  }, 300);
 }
 
 function sendWhatsApp() {
