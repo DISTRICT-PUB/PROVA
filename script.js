@@ -39,6 +39,49 @@ document.addEventListener("DOMContentLoaded", () => {
     let count = 20;
     const interval = setInterval(() => {
       reels.forEach((reel) => {
+document.addEventListener("DOMContentLoaded", () => {
+  const symbols = ["🥃", "🍺", "🍻", "🍷", "🎮", "🎟️"];
+  const prizePool = [
+    { symbol: "🎟️", prize: "Sconto 10%", chance: 0.03 },
+    { symbol: "🎮", prize: "Partita ai giochi", chance: 0.25 },
+    { symbol: "🍷", prize: "Calice di vino", chance: 0.06 },
+    { symbol: "🍻", prize: "Birra piccola", chance: 0.30 },
+    { symbol: "🍺", prize: "Birra media", chance: 0.20 },
+  ];
+
+  const winChance = 0.8;
+
+  const reels = [
+    document.getElementById("reel1"),
+    document.getElementById("reel2"),
+    document.getElementById("reel3")
+  ];
+  const spinBtn = document.getElementById("spin-button");
+  const resultMsg = document.getElementById("result-message");
+  const claimSection = document.getElementById("claim-section");
+  const userPhone = document.getElementById("user-phone");
+  const claimBtn = document.getElementById("claim-button");
+  const whatsappLink = document.getElementById("whatsapp-link");
+
+  const audioSpin = document.getElementById("audio-spin");
+  const audioWin = document.getElementById("audio-win");
+
+  const weeklyBlockEnabled = true;  
+
+  function getPrize() {
+    const r = Math.random();
+    let acc = 0;
+    for (let p of prizePool) {
+      acc += p.chance;
+      if (r <= acc) return p;
+    }
+    return prizePool[prizePool.length - 1];
+  }
+
+  function spinReels(targetSymbol, callback) {
+    let count = 20;
+    const interval = setInterval(() => {
+      reels.forEach((reel) => {
         reel.textContent = symbols[Math.floor(Math.random() * symbols.length)];
       });
       count--;
@@ -54,7 +97,28 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 75);
   }
 
+  
+    function canPlay() {
+    if (!weeklyBlockEnabled) return true; 
+    const lastPlayDate = localStorage.getItem("lastPlayDate");
+    if (lastPlayDate) {
+      const now = new Date();
+      const lastPlay = new Date(lastPlayDate);
+      const diff = now - lastPlay;
+      const daysSinceLastPlay = diff / (1000 * 60 * 60 * 24); // Converte la differenza in giorni
+
+      if (daysSinceLastPlay < 7) {
+        const daysRemaining = 7 - Math.floor(daysSinceLastPlay);
+        resultMsg.textContent = `Hai già giocato di recente. Riprova tra ${daysRemaining} giorni.`;
+        return false;
+      }
+    }
+    return true;
+  }
+
   spinBtn.addEventListener("click", () => {
+    if (!canPlay()) return; 
+
     spinBtn.disabled = true;
     resultMsg.textContent = "";
     claimSection.classList.add("hidden");
@@ -77,6 +141,10 @@ document.addEventListener("DOMContentLoaded", () => {
         claimSection.classList.remove("hidden");
       });
     }
+
+    // Salva la data dell'ultima giocata
+    const now = new Date();
+    localStorage.setItem("lastPlayDate", now.toISOString());
 
     setTimeout(() => {
       spinBtn.disabled = false;
