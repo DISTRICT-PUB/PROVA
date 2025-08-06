@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>District Pub Slot</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="slot-graphic">
+      <div class="reel" id="reel1"></div>
+      <div class="reel" id="reel2"></div>
+      <div class="reel" id="reel3"></div>
+    </div>
+    <button id="spin-button" class="btn">GIRA</button>
+    <p id="result-message"></p>
+
+    <div id="claim-section" class="hidden">
+      <h2>Hai vinto! Inserisci il numero per ritirare:</h2>
+      <input type="tel" id="user-phone" placeholder="Il tuo numero" required />
+      <button id="claim-button" class="btn">Invia messaggio al pub</button>
+      <a id="whatsapp-link" class="btn hidden" target="_blank">Apri WhatsApp</a>
+    </div>
+  </div>
+
+  <audio id="audio-spin" src="assets/spin.mp3"></audio>
+  <audio id="audio-win" src="assets/win.mp3"></audio>
+  <script src="script.js"></script>
+</body>
+</html>
