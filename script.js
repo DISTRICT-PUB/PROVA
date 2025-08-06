@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const text = encodeURIComponent(`Ciao! Ho vinto alla slot del District Pub. Premio: ${resultMsg.textContent} – Numero: ${phone}`);
     const link = `https://wa.me/393793039278?text=${text}`;
-    window.location.href = link;
+    window.open(link,'_blank');
     whatsappLink.classList.add("hidden");
   });
 });
