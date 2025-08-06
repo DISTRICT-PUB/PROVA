@@ -9,7 +9,7 @@ body {
 
 .container {
   max-width: 800px;
-  margin: 40px auto;
+  margin: 20px auto;
   padding: 20px;
   background: rgba(0, 0, 0, 0.7);
   border-radius: 12px;
@@ -28,13 +28,13 @@ body {
 }
 
 .reel {
-  width: 70px;
-  height: 70px;
+  width: 80px;
+  height: 80px;
   background: black;
   border: 3px solid gold;
   border-radius: 10px;
-  font-size: 50px;
-  line-height: 70px;
+  font-size: 60px;
+  line-height: 80px;
   color: white;
 }
 
