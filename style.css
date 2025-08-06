@@ -15,11 +15,11 @@ body {
   border-radius: 12px;
 }
 
-.slot-container {
+.slot-graphic {
   background: url('assets/slot_background.png') no-repeat center center;
-  background-size: cover;
+  background-size: contain;
   width: 100%;
-  height: 500px;
+  height: 600px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -28,13 +28,13 @@ body {
 }
 
 .reel {
-  width: 100px;
-  height: 100px;
+  width: 90px;
+  height: 90px;
   background: black;
   border: 3px solid gold;
   border-radius: 10px;
   font-size: 60px;
-  line-height: 100px;
+  line-height: 90px;
   color: white;
 }
 

@@ -1,67 +1,95 @@
-const symbols = ["🎮", "🍻", "🍺", "🍷", "🎟️"];
-const prizeProbabilities = [
-  { prize: "🎮 Partita ai giochi", probability: 0.25 },
-  { prize: "🍻 Birra piccola", probability: 0.30 },
-  { prize: "🍺 Birra media", probability: 0.20 },
-  { prize: "🍷 Calice di vino", probability: 0.06 },
-  { prize: "🎟️ Sconto 10%", probability: 0.03 }
-];
+document.addEventListener("DOMContentLoaded", () => {
+  const symbols = ["🥃", "🍺", "🍻", "🍷", "🎮", "🎟️"];
+  const prizePool = [
+    { symbol: "🎟️", prize: "Sconto 10%", chance: 0.03 },
+    { symbol: "🎮", prize: "Partita ai giochi", chance: 0.25 },
+    { symbol: "🍷", prize: "Calice di vino", chance: 0.06 },
+    { symbol: "🍻", prize: "Birra piccola", chance: 0.30 },
+    { symbol: "🍺", prize: "Birra media", chance: 0.20 },
+  ];
 
-function getRandomPrize() {
-  const rand = Math.random();
-  let sum = 0;
-  for (const item of prizeProbabilities) {
-    sum += item.probability;
-    if (rand <= sum) return item.prize;
-  }
-  return null;
-}
+  const winChance = 0.8;
 
-function startSlot() {
-  let count = 0;
-  const max = 20;
-  const interval = setInterval(() => {
-    document.getElementById("reel1").textContent = symbols[Math.floor(Math.random() * symbols.length)];
-    document.getElementById("reel2").textContent = symbols[Math.floor(Math.random() * symbols.length)];
-    document.getElementById("reel3").textContent = symbols[Math.floor(Math.random() * symbols.length)];
-    count++;
-    if (count >= max) {
-      clearInterval(interval);
-      handleSlotResult();
+  const reels = [
+    document.getElementById("reel1"),
+    document.getElementById("reel2"),
+    document.getElementById("reel3")
+  ];
+  const spinBtn = document.getElementById("spin-button");
+  const resultMsg = document.getElementById("result-message");
+  const claimSection = document.getElementById("claim-section");
+  const userPhone = document.getElementById("user-phone");
+  const claimBtn = document.getElementById("claim-button");
+  const whatsappLink = document.getElementById("whatsapp-link");
+
+  const audioSpin = document.getElementById("audio-spin");
+  const audioWin = document.getElementById("audio-win");
+
+  function getPrize() {
+    const r = Math.random();
+    let acc = 0;
+    for (let p of prizePool) {
+      acc += p.chance;
+      if (r <= acc) return p;
     }
-  }, 100);
-}
+    return prizePool[prizePool.length - 1];
+  }
 
-function handleSlotResult() {
-  const prize = getRandomPrize();
-  setTimeout(() => {
-    if (prize) {
-      document.getElementById("result").innerHTML =
-        "🎉 Complimenti! Hai vinto: <strong>" + prize + "</strong>";
-      document.getElementById("form").style.display = "block";
-      document.getElementById("prize").value = prize;
+  function spinReels(targetSymbol, callback) {
+    let count = 20;
+    const interval = setInterval(() => {
+      reels.forEach((reel) => {
+        reel.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      });
+      count--;
+      if (count <= 0) {
+        clearInterval(interval);
+        setTimeout(() => {
+          reels.forEach((reel, i) => {
+            setTimeout(() => reel.textContent = targetSymbol, i * 150);
+          });
+          setTimeout(callback, 700);
+        }, 200);
+      }
+    }, 75);
+  }
+
+  spinBtn.addEventListener("click", () => {
+    spinBtn.disabled = true;
+    resultMsg.textContent = "";
+    claimSection.classList.add("hidden");
+    whatsappLink.classList.add("hidden");
+
+    if (audioSpin) audioSpin.play();
+
+    const didWin = Math.random() <= winChance;
+
+    if (didWin) {
+      const prize = getPrize();
+      spinReels(prize.symbol, () => {
+        if (audioWin) audioWin.play();
+        resultMsg.textContent = `🎉 Hai vinto: ${prize.prize}!`;
+        claimSection.classList.remove("hidden");
+      });
     } else {
-      document.getElementById("result").innerHTML =
-        "😅 Non hai vinto... <strong>MA UN CHUPITO TE LO OFFRIAMO LO STESSO!</strong>";
-      document.getElementById("form").style.display = "block";
-      document.getElementById("prize").value = "🥃 Chupito (offerto)";
+      spinReels("❌", () => {
+        resultMsg.textContent = "❌ Non hai vinto, Mandaci un messaggio e ti offriamo un Chupito";
+        claimSection.classList.remove("hidden");
+      });
     }
-  }, 300);
-}
 
-function sendWhatsApp() {
-  const phone = document.getElementById("phone").value;
-  const prize = document.getElementById("prize").value;
+    setTimeout(() => {
+      spinBtn.disabled = false;
+    }, 3000);
+  });
 
-  if (!phone) {
-    alert("Inserisci il numero di telefono per inviare il messaggio.");
-    return;
-  }
+  claimBtn.addEventListener("click", () => {
+    const phone = userPhone.value.trim();
+    if (!phone) return;
 
-  const pubNumber = "+393793039278";
-  const message = `Ciao! Ho vinto ${prize} al District Pub! Il mio numero è ${phone}.`;
-  const encodedMessage = encodeURIComponent(message);
-  const whatsappUrl = `https://wa.me/${pubNumber}?text=${encodedMessage}`;
-
-  window.location.href = whatsappUrl;
-}
+    const text = encodeURIComponent(`Ciao! Ho vinto alla slot del District Pub. Premio: ${resultMsg.textContent} – Numero: ${phone}`);
+    const link = `https://wa.me/393793039278?text=${text}`;
+    whatsappLink.href = link;
+    whatsappLink.classList.remove("hidden");
+  });
+});
