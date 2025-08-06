@@ -8,24 +8,26 @@
 </head>
 <body>
   <div class="container">
-    <div class="slot-graphic">
-      <div class="reel" id="reel1"></div>
-      <div class="reel" id="reel2"></div>
-      <div class="reel" id="reel3"></div>
-    </div>
-    <button id="spin-button" class="btn">GIRA</button>
-    <p id="result-message"></p>
+    <h1>🎰 Vinci da bere al District Pub!</h1>
 
-    <div id="claim-section" class="hidden">
-      <h2>Hai vinto! Inserisci il numero per ritirare:</h2>
-      <input type="tel" id="user-phone" placeholder="Il tuo numero" required />
-      <button id="claim-button" class="btn">Invia messaggio al pub</button>
-      <a id="whatsapp-link" class="btn hidden" target="_blank">Apri WhatsApp</a>
+    <div class="slot-graphic">
+      <div class="reel">❓</div>
+      <div class="reel">❓</div>
+      <div class="reel">❓</div>
+    </div>
+
+    <button class="btn" onclick="playSlot()">Gioca ora</button>
+
+    <div id="result" style="margin-top: 20px; font-size: 20px;"></div>
+
+    <div id="form" class="hidden" style="margin-top: 20px;">
+      <input type="tel" id="phone" placeholder="Inserisci il tuo numero" />
+      <input type="hidden" id="prize" />
+      <br />
+      <button class="btn" onclick="sendWhatsApp()">Invia via WhatsApp</button>
     </div>
   </div>
 
-  <audio id="audio-spin" src="assets/spin.mp3"></audio>
-  <audio id="audio-win" src="assets/win.mp3"></audio>
   <script src="script.js"></script>
 </body>
 </html>

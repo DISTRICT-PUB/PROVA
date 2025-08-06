@@ -23,12 +23,12 @@ function playSlot() {
   if (result) {
     document.getElementById("result").innerHTML =
       "🎉 Complimenti! Hai vinto: <strong>" + result + "</strong>";
-    document.getElementById("form").style.display = "block";
+    document.getElementById("form").classList.remove("hidden");
     document.getElementById("prize").value = result;
   } else {
     document.getElementById("result").innerHTML =
       "😅 Non hai vinto... <strong>MA UN CHUPITO TE LO OFFRIAMO LO STESSO!</strong>";
-    document.getElementById("form").style.display = "block";
+    document.getElementById("form").classList.remove("hidden");
     document.getElementById("prize").value = "🥃 Chupito (offerto)";
   }
 }
