@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const isWin = !prizeText.startsWith("❌");
 
     const uniqueId = generateUniqueId();
-    const qrLink = `https://districtpub.it/claim.html?id=${uniqueId}`; // Link alla pagina con QR
+    const qrLink = `https://district-pub.github.io/PROVA/claim.html?id=${uniqueId}`; // Link alla pagina con QR
 
     const text = encodeURIComponent(
       `Ciao! Ho vinto alla slot del District Pub 🎰\nPremio: ${prizeText}\nNumero: ${phone}\nQR per il ritiro: ${qrLink}`
@@ -162,3 +162,4 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
