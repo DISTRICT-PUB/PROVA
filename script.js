@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const audioWin = document.getElementById("audio-win");
 
   // Variabile di configurazione per abilitare/disabilitare il blocco settimanale
-  const weeklyBlockEnabled = false;
+  const weeklyBlockEnabled = false;  // Imposta a 'false' per disabilitare il blocco settimanale
 
   function getPrize() {
     const r = Math.random();
@@ -94,15 +94,15 @@ document.addEventListener("DOMContentLoaded", () => {
       // Mostra l'URL per il debug
       alert(`URL WhatsApp generato: ${link}`);
 
-      // Crea il link di WhatsApp senza aprirlo automaticamente
       whatsappLink.href = link;
       whatsappLink.classList.remove("hidden");
+      whatsappLink.click();
     });
   }
 
   // Funzione per verificare se è passata una settimana dall'ultima giocata
   function canPlay() {
-    if (!weeklyBlockEnabled) return true;
+    if (!weeklyBlockEnabled) return true; // Se il blocco settimanale è disabilitato, consente la giocata
 
     const lastPlayDate = localStorage.getItem("lastPlayDate");
     if (lastPlayDate) {
@@ -113,40 +113,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (daysSinceLastPlay < 7) {
         resultMsg.textContent = "Ci vediamo tra una settimana!";
-        return false;
+        return false; // Blocca il gioco se non è passato abbastanza tempo
       }
     }
-    return true;
+    return true; // Permetti il gioco se è passato abbastanza tempo
   }
 
   spinBtn.addEventListener("click", () => {
-    if (!canPlay()) return;
+    if (!canPlay()) return; // Blocca la giocata se non è passato abbastanza tempo
 
-    spinBtn.disabled = true;
-    resultMsg.textContent = "";
-    claimSection.classList.add("hidden");
-    whatsappLink.classList.add("hidden");
+    spinBtn.disabled = true; // Disabilita il pulsante mentre gira la slot
+    resultMsg.textContent = ""; // Resetta il messaggio di risultato
+    claimSection.classList.add("hidden"); // Nasconde la sezione per il premio
+    whatsappLink.classList.add("hidden"); // Nasconde il link WhatsApp
 
-    if (audioSpin) audioSpin.play();
+    if (audioSpin) audioSpin.play(); // Suona il suono di spin
 
-    const didWin = Math.random() <= winChance;
+    const didWin = Math.random() <= winChance; // Determina se l'utente ha vinto
 
     if (didWin) {
       const prize = getPrize();
-      const prizeId = generateUniqueCode();
+      const prizeId = generateUniqueCode();  // Genera un ID univoco per il premio
       spinReels(prize.symbol, () => {
-        if (audioWin) audioWin.play();
-        resultMsg.textContent = `🎉 Hai vinto: ${prize.prize}!`;
-        generateQRCode(prizeId);
-        claimSection.classList.remove("hidden");
+        if (audioWin) audioWin.play(); // Suona il suono di vincita
+        resultMsg.textContent = `🎉 Hai vinto: ${prize.prize}!`; // Mostra il premio vinto
+        generateQRCode(prizeId);  // Genera il QR code per il premio
+        claimSection.classList.remove("hidden"); // Mostra la sezione per reclamare il premio
 
         // Invia il messaggio di WhatsApp con il QR code
         sendWhatsappMessageWithQRCode(prizeId);
       });
     } else {
       spinReels("❌", () => {
-        resultMsg.textContent = "❌ Non hai vinto, Mandaci un messaggio e ti offriamo un Chupito";
-        claimSection.classList.remove("hidden");
+        resultMsg.textContent = "❌ Non hai vinto, Mandaci un messaggio e ti offriamo un Chupito"; // Messaggio di perdita
+        claimSection.classList.remove("hidden"); // Mostra la sezione per reclamare il chupito
       });
     }
 
@@ -155,7 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("lastPlayDate", now.toISOString());
 
     setTimeout(() => {
-      spinBtn.disabled = false;
+      spinBtn.disabled = false; // Riabilita il pulsante dopo 3 secondi
     }, 3000);
   });
 
@@ -174,7 +174,6 @@ document.addEventListener("DOMContentLoaded", () => {
     alert(`URL WhatsApp generato: ${link}`);
     whatsappLink.href = link;
     whatsappLink.classList.remove("hidden");
-    whatsappLink.click();
+    whatsappLink.click(); 
   });
 });
-
