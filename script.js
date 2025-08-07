@@ -95,8 +95,12 @@ document.addEventListener("DOMContentLoaded", () => {
         Numero: ${phone}`);
 
       const link = `https://wa.me/393793039278?text=${text}`;
-      console.log("WhatsApp URL:", link); // Verifica l'URL generato
+      console.log("WhatsApp URL:", link);  // Verifica l'URL generato
 
+      // Usa window.open per aprire direttamente il link
+      window.open(link, '_blank');  // Apri il link in una nuova finestra
+
+      // Se preferisci cliccare sul link manualmente
       whatsappLink.href = link;
       whatsappLink.classList.remove("hidden");
       whatsappLink.click();
@@ -176,7 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Mostra l'URL per il debug
     alert(`URL WhatsApp generato: ${link}`);
     whatsappLink.href = link;
-    whatsappLink.classList.remove("hidden");
+    whatsappLink.classList.add("hidden");
     whatsappLink.click(); 
   });
 });
