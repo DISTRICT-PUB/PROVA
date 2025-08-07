@@ -1,5 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Simboli disponibili nella slot
   const symbols = ["🥃", "🍺", "🍻", "🍷", "🎮", "🎟️"];
+
+  // Pool dei premi con le relative probabilità
   const prizePool = [
     { symbol: "🎟️", prize: "Sconto 10%", chance: 0.03 },
     { symbol: "🎮", prize: "Partita ai giochi", chance: 0.25 },
@@ -8,8 +11,9 @@ document.addEventListener("DOMContentLoaded", () => {
     { symbol: "🍺", prize: "Birra media", chance: 0.20 },
   ];
 
-  const winChance = 0.8;
+  const winChance = 0.8; // Percentuale di possibilità di vincita
 
+  // Selettori degli elementi della pagina
   const reels = [
     document.getElementById("reel1"),
     document.getElementById("reel2"),
@@ -25,9 +29,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const audioSpin = document.getElementById("audio-spin");
   const audioWin = document.getElementById("audio-win");
 
-  // Variabile di configurazione per abilitare/disabilitare il blocco settimanale
-  const weeklyBlockEnabled = false;  // Imposta a 'false' per disabilitare il blocco settimanale
+  const weeklyBlockEnabled = false; // Imposta a true se vuoi bloccare la giocata per una settimana
 
+  // Seleziona un premio casuale in base alle probabilità
   function getPrize() {
     const r = Math.random();
     let acc = 0;
@@ -35,9 +39,10 @@ document.addEventListener("DOMContentLoaded", () => {
       acc += p.chance;
       if (r <= acc) return p;
     }
-    return prizePool[prizePool.length - 1];
+    return prizePool[prizePool.length - 1]; // Default (fallback)
   }
 
+  // Anima la slot e poi mostra il simbolo vincente
   function spinReels(targetSymbol, callback) {
     let count = 20;
     const interval = setInterval(() => {
@@ -57,131 +62,103 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 75);
   }
 
-  // Funzione per generare un identificatore unico per ogni premio
-  function generateUniqueCode() {
-    return 'VINCITA-' + Math.random().toString(36).substr(2, 9);  // Crea un ID univoco
-  }
-
-  // Funzione per generare un QR code e restituirlo come base64
-  function generateQRCodeBase64(prizeId, callback) {
-    QRCode.toDataURL(prizeId, { width: 200 }, function (error, url) {
-      if (error) {
-        console.error(error);
-        return;
-      }
-      callback(url); // Ritorna l'URL base64 dell'immagine del QR code
-    });
-  }
-
-  // Funzione che invia il link alla pagina del QR code via WhatsApp
-  function sendWhatsappMessageWithQRCode(prizeId) {
-    generateQRCodeBase64(prizeId, (qrCodeUrl) => {
-      const phone = userPhone.value.trim();
-      if (!phone) {
-        alert("Per favore inserisci un numero di telefono valido.");
-        return;
-      }
-
-      // Salva il QR code nella sessionStorage
-      sessionStorage.setItem("qrCodeData", qrCodeUrl);
-
-      // Link alla pagina del QR code
-      const qrCodePageLink = "qr-code-page.html"; // La pagina dove il QR code verrà mostrato
-
-      const text = encodeURIComponent(`
-        Ciao! Ho vinto alla slot del District Pub. Premio: ${resultMsg.textContent} 
-        Puoi ritirare il premio mostrando questo QR code: 
-        Visita il link per visualizzarlo: ${window.location.origin}/${qrCodePageLink} 
-        Numero: ${phone}`);
-
-      const link = `https://wa.me/393793039278?text=${text}`;
-      console.log("WhatsApp URL:", link);  // Verifica l'URL generato
-
-      // Usa window.open per aprire direttamente il link
-      window.open(link, '_blank');  // Apri il link in una nuova finestra
-
-      // Se preferisci cliccare sul link manualmente
-      whatsappLink.href = link;
-      whatsappLink.classList.remove("hidden");
-      whatsappLink.click();
-    });
-  }
-
-  // Funzione per verificare se è passata una settimana dall'ultima giocata
+  // Controlla se l’utente può giocare (es. dopo una settimana)
   function canPlay() {
-    if (!weeklyBlockEnabled) return true; // Se il blocco settimanale è disabilitato, consente la giocata
+    if (!weeklyBlockEnabled) return true;
 
     const lastPlayDate = localStorage.getItem("lastPlayDate");
     if (lastPlayDate) {
       const now = new Date();
       const lastPlay = new Date(lastPlayDate);
       const diff = now - lastPlay;
-      const daysSinceLastPlay = diff / (1000 * 60 * 60 * 24); // Converte la differenza in giorni
-
+      const daysSinceLastPlay = diff / (1000 * 60 * 60 * 24);
       if (daysSinceLastPlay < 7) {
         resultMsg.textContent = "Ci vediamo tra una settimana!";
-        return false; // Blocca il gioco se non è passato abbastanza tempo
+        return false;
       }
     }
-    return true; // Permetti il gioco se è passato abbastanza tempo
+    return true;
   }
 
+  // Quando si clicca su "GIRA"
   spinBtn.addEventListener("click", () => {
-    if (!canPlay()) return; // Blocca la giocata se non è passato abbastanza tempo
+    if (!canPlay()) return;
 
-    spinBtn.disabled = true; // Disabilita il pulsante mentre gira la slot
-    resultMsg.textContent = ""; // Resetta il messaggio di risultato
-    claimSection.classList.add("hidden"); // Nasconde la sezione per il premio
-    whatsappLink.classList.add("hidden"); // Nasconde il link WhatsApp
+    spinBtn.disabled = true;
+    resultMsg.textContent = "";
+    claimSection.classList.add("hidden");
+    whatsappLink.classList.add("hidden");
 
-    if (audioSpin) audioSpin.play(); // Suona il suono di spin
+    if (audioSpin) audioSpin.play();
 
-    const didWin = Math.random() <= winChance; // Determina se l'utente ha vinto
+    const didWin = Math.random() <= winChance;
 
     if (didWin) {
       const prize = getPrize();
-      const prizeId = generateUniqueCode();  // Genera un ID univoco per il premio
       spinReels(prize.symbol, () => {
-        if (audioWin) audioWin.play(); // Suona il suono di vincita
-        resultMsg.textContent = `🎉 Hai vinto: ${prize.prize}!`; // Mostra il premio vinto
-        generateQRCode(prizeId);  // Genera il QR code per il premio
-        claimSection.classList.remove("hidden"); // Mostra la sezione per reclamare il premio
-
-        // Invia il messaggio di WhatsApp con il link alla pagina
-        sendWhatsappMessageWithQRCode(prizeId);
+        if (audioWin) audioWin.play();
+        resultMsg.textContent = `🎉 Hai vinto: ${prize.prize}!`;
+        claimSection.classList.remove("hidden");
       });
     } else {
       spinReels("❌", () => {
-        resultMsg.textContent = "❌ Non hai vinto, Mandaci un messaggio e ti offriamo un Chupito"; // Messaggio di perdita
-        claimSection.classList.remove("hidden"); // Mostra la sezione per reclamare il chupito
+        resultMsg.textContent = "❌ Non hai vinto, Mandaci un messaggio e ti offriamo un Chupito";
+        claimSection.classList.remove("hidden");
       });
     }
 
-    // Salva la data dell'ultima giocata
+    // Salva la data dell’ultima giocata
     const now = new Date();
     localStorage.setItem("lastPlayDate", now.toISOString());
 
     setTimeout(() => {
-      spinBtn.disabled = false; // Riabilita il pulsante dopo 3 secondi
+      spinBtn.disabled = false;
     }, 3000);
   });
 
+  // Quando si clicca su "Invia messaggio al pub"
   claimBtn.addEventListener("click", () => {
     const phone = userPhone.value.trim();
-    if (!phone) {
-      alert("Per favore inserisci un numero di telefono valido.");
-      return;
-    }
+    if (!phone) return;
 
-    const text = encodeURIComponent(`Ciao! Ho vinto alla slot del District Pub. Premio: ${resultMsg.textContent} – Numero: ${phone}`);
+    const prizeText = resultMsg.textContent.replace("🎉 Hai vinto: ", "").trim();
+    const isWin = !prizeText.startsWith("❌");
+
+    const uniqueId = generateUniqueId();
+    const qrLink = `https://districtpub.it/claim.html?id=${uniqueId}`; // Link alla pagina con QR
+
+    const text = encodeURIComponent(
+      `Ciao! Ho vinto alla slot del District Pub 🎰\nPremio: ${prizeText}\nNumero: ${phone}\nQR per il ritiro: ${qrLink}`
+    );
+
     const link = `https://wa.me/393793039278?text=${text}`;
-    console.log("WhatsApp link:", link); // Verifica l'URL generato
-
-    // Mostra l'URL per il debug
-    alert(`URL WhatsApp generato: ${link}`);
     whatsappLink.href = link;
     whatsappLink.classList.remove("hidden");
-    whatsappLink.click(); 
-  });
-});
+    whatsappLink.click();
 
+    // Salva la vincita sul backend (solo se è una vera vincita)
+    if (isWin) {
+      saveClaimToBackend({
+        id: uniqueId,
+        prize: prizeText,
+        phone,
+        used: false,
+        timestamp: new Date().toISOString()
+      });
+    }
+  });
+
+  // Genera un ID univoco casuale
+  function generateUniqueId() {
+    return Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
+  }
+
+  // Invia i dati della vincita al backend Node.js
+  function saveClaimToBackend(data) {
+    fetch("https://district-pub-backend.onrender.com/api/save-claim", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+  }
+});
