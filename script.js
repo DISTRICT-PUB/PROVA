@@ -180,7 +180,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Mostra l'URL per il debug
     alert(`URL WhatsApp generato: ${link}`);
     whatsappLink.href = link;
-    whatsappLink.classList.add("hidden");
+    whatsappLink.classList.remove("hidden");
     whatsappLink.click(); 
   });
 });
+
