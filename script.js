@@ -126,8 +126,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 3000);
   });
 
-  // Quando si clicca su "Invia messaggio al pub"
+  // ✅ Quando si clicca su "Invia messaggio al pub"
   claimBtn.addEventListener("click", () => {
+    // ✅ Controllo consenso privacy
+    const consentGiven = document.getElementById("consent-checkbox")?.checked;
+    if (!consentGiven) {
+      alert("Devi acconsentire al trattamento dei dati per continuare.");
+      return;
+    }
+
     const phone = userPhone.value.trim();
     if (!phone) return;
 
