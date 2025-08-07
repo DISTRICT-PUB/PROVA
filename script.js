@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const audioWin = document.getElementById("audio-win");
 
   // Variabile di configurazione per abilitare/disabilitare il blocco settimanale
-  const weeklyBlockEnabled = false;  // Imposta a 'false' per disabilitare il blocco settimanale
+  const weeklyBlockEnabled = true;  // Imposta a 'false' per disabilitare il blocco settimanale
 
   function getPrize() {
     const r = Math.random();
@@ -77,14 +77,19 @@ document.addEventListener("DOMContentLoaded", () => {
   function sendWhatsappMessageWithQRCode(prizeId) {
     generateQRCodeBase64(prizeId, (qrCodeUrl) => {
       const phone = userPhone.value.trim();
-      if (!phone) return;
+      if (!phone) {
+        alert("Per favore inserisci un numero di telefono valido.");
+        return;
+      }
 
       const text = encodeURIComponent(`
         Ciao! Ho vinto alla slot del District Pub. Premio: ${resultMsg.textContent} 
         Puoi ritirare il premio mostrando questo QR code: 
         ${qrCodeUrl} 
         Numero: ${phone}`);
+      
       const link = `https://wa.me/393793039278?text=${text}`;
+      console.log("WhatsApp URL:", link); // Verifica l'URL generato
 
       whatsappLink.href = link;
       whatsappLink.classList.remove("hidden");
@@ -153,10 +158,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   claimBtn.addEventListener("click", () => {
     const phone = userPhone.value.trim();
-    if (!phone) return;
+    if (!phone) {
+      alert("Per favore inserisci un numero di telefono valido.");
+      return;
+    }
 
     const text = encodeURIComponent(`Ciao! Ho vinto alla slot del District Pub. Premio: ${resultMsg.textContent} – Numero: ${phone}`);
     const link = `https://wa.me/393793039278?text=${text}`;
+    console.log("WhatsApp link:", link); // Verifica l'URL generato
     whatsappLink.href = link;
     whatsappLink.classList.remove("hidden");
     whatsappLink.click(); 
