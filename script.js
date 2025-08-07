@@ -128,7 +128,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const qrLink = `https://district-pub.github.io/PROVA/claim.html?id=${uniqueId}`; // Link alla pagina con QR
 
     const text = encodeURIComponent(
-      `Ciao! Ho vinto alla slot del District Pub 🎰\nPremio: ${prizeText}\nNumero: ${phone}\nQR per il ritiro: ${qrLink}`
+      `Ciao! Ho vinto alla slot del District Pub 🎰
+Premio: ${prizeText}
+Numero: ${phone}
+QR per il ritiro: ${qrLink}`
     );
 
     const link = `https://wa.me/393793039278?text=${text}`;
