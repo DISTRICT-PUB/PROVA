@@ -62,13 +62,34 @@ document.addEventListener("DOMContentLoaded", () => {
     return 'VINCITA-' + Math.random().toString(36).substr(2, 9);  // Crea un ID univoco
   }
 
-  // Funzione per generare un QR code per un premio
-  function generateQRCode(prizeId) {
-    const qrCodeContainer = document.getElementById("qr-code-container");
-    QRCode.toCanvas(qrCodeContainer, prizeId, function (error) {
-      if (error) console.error(error);
+  // Funzione per generare un QR code e restituirlo come base64
+  function generateQRCodeBase64(prizeId, callback) {
+    QRCode.toDataURL(prizeId, { width: 200 }, function (error, url) {
+      if (error) {
+        console.error(error);
+        return;
+      }
+      callback(url); // Ritorna l'URL base64 dell'immagine del QR code
     });
-    qrCodeContainer.classList.remove("hidden");  // Mostra il QR code
+  }
+
+  // Funzione che invia il QR code come parte del messaggio su WhatsApp
+  function sendWhatsappMessageWithQRCode(prizeId) {
+    generateQRCodeBase64(prizeId, (qrCodeUrl) => {
+      const phone = userPhone.value.trim();
+      if (!phone) return;
+
+      const text = encodeURIComponent(`
+        Ciao! Ho vinto alla slot del District Pub. Premio: ${resultMsg.textContent} 
+        Puoi ritirare il premio mostrando questo QR code: 
+        ${qrCodeUrl} 
+        Numero: ${phone}`);
+      const link = `https://wa.me/393793039278?text=${text}`;
+
+      whatsappLink.href = link;
+      whatsappLink.classList.remove("hidden");
+      whatsappLink.click();
+    });
   }
 
   // Funzione per verificare se è passata una settimana dall'ultima giocata
@@ -110,6 +131,9 @@ document.addEventListener("DOMContentLoaded", () => {
         resultMsg.textContent = `🎉 Hai vinto: ${prize.prize}!`; // Mostra il premio vinto
         generateQRCode(prizeId);  // Genera il QR code per il premio
         claimSection.classList.remove("hidden"); // Mostra la sezione per reclamare il premio
+
+        // Invia il messaggio di WhatsApp con il QR code
+        sendWhatsappMessageWithQRCode(prizeId);
       });
     } else {
       spinReels("❌", () => {
@@ -138,4 +162,3 @@ document.addEventListener("DOMContentLoaded", () => {
     whatsappLink.click(); 
   });
 });
-
