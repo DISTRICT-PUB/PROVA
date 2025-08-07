@@ -29,7 +29,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const audioSpin = document.getElementById("audio-spin");
   const audioWin = document.getElementById("audio-win");
 
-  const weeklyBlockEnabled = false; // Imposta a true se vuoi bloccare la giocata per una settimana
+  // 🔧 CONFIGURAZIONI DI BLOCCO GIOCATA
+  const singlePlayUntilDateEnabled = false; // true per abilitare il blocco fino al 25/08/2025
+  const weeklyBlockEnabled = false;         // true per bloccare una giocata ogni 7 giorni dopo il 25/08/2025
+  const limitDate = new Date("2025-08-25T23:59:59");
 
   // Seleziona un premio casuale in base alle probabilità
   function getPrize() {
@@ -62,21 +65,28 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 75);
   }
 
-  // Controlla se l’utente può giocare (es. dopo una settimana)
+  // ✅ FUNZIONE BLOCCO GIOCATA
   function canPlay() {
-    if (!weeklyBlockEnabled) return true;
-
+    const now = new Date();
     const lastPlayDate = localStorage.getItem("lastPlayDate");
-    if (lastPlayDate) {
-      const now = new Date();
-      const lastPlay = new Date(lastPlayDate);
+    if (!lastPlayDate) return true;
+
+    const lastPlay = new Date(lastPlayDate);
+
+    if (singlePlayUntilDateEnabled && now <= limitDate) {
+      resultMsg.textContent = "Hai già giocato! Riprova dopo il 25 agosto 🎉";
+      return false;
+    }
+
+    if (weeklyBlockEnabled && now > limitDate) {
       const diff = now - lastPlay;
       const daysSinceLastPlay = diff / (1000 * 60 * 60 * 24);
       if (daysSinceLastPlay < 7) {
-        resultMsg.textContent = "Ci vediamo tra una settimana!";
+        resultMsg.textContent = "Hai già giocato questa settimana! ⏳";
         return false;
       }
     }
+
     return true;
   }
 
@@ -128,10 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const qrLink = `https://district-pub.github.io/PROVA/claim.html?id=${uniqueId}`; // Link alla pagina con QR
 
     const text = encodeURIComponent(
-      `Ciao! Ho vinto alla slot del District Pub 🎰
-Premio: ${prizeText}
-Numero: ${phone}
-QR per il ritiro: ${qrLink}`
+      `Ciao! Ho vinto alla slot del District Pub 🎰\nPremio: ${prizeText}\nNumero: ${phone}\nQR per il ritiro: ${qrLink}`
     );
 
     const link = `https://wa.me/393793039278?text=${text}`;
@@ -158,22 +165,22 @@ QR per il ritiro: ${qrLink}`
 
   // Invia i dati della vincita al backend Node.js
   function saveClaimToBackend(data) {
-  console.log("Invio dati al backend:", data);
+    console.log("Invio dati al backend:", data);
 
-  fetch("https://district-pub-backend.onrender.com/api/claim", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  })
-  .then(res => {
-    if (!res.ok) {
-      console.error("Errore dal server:", res.status);
-    } else {
-      console.log("✅ Vincita salvata con successo");
-    }
-    return res.json();
-  })
-  .then(json => console.log("Risposta del backend:", json))
-  .catch(err => console.error("Errore di rete:", err));
+    fetch("https://district-pub-backend.onrender.com/api/claim", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    })
+      .then(res => {
+        if (!res.ok) {
+          console.error("Errore dal server:", res.status);
+        } else {
+          console.log("✅ Vincita salvata con successo");
+        }
+        return res.json();
+      })
+      .then(json => console.log("Risposta del backend:", json))
+      .catch(err => console.error("Errore di rete:", err));
   }
 });
