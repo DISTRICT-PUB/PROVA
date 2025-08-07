@@ -158,10 +158,22 @@ QR per il ritiro: ${qrLink}`
 
   // Invia i dati della vincita al backend Node.js
   function saveClaimToBackend(data) {
-    fetch("https://district-pub-backend.onrender.com/api/claim", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
+  console.log("Invio dati al backend:", data);
+
+  fetch("https://district-pub-backend.onrender.com/api/claim", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  })
+  .then(res => {
+    if (!res.ok) {
+      console.error("Errore dal server:", res.status);
+    } else {
+      console.log("✅ Vincita salvata con successo");
+    }
+    return res.json();
+  })
+  .then(json => console.log("Risposta del backend:", json))
+  .catch(err => console.error("Errore di rete:", err));
   }
 });
