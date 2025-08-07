@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Funzione che invia il QR code come parte del messaggio su WhatsApp
+  // Funzione che invia il link alla pagina del QR code via WhatsApp
   function sendWhatsappMessageWithQRCode(prizeId) {
     generateQRCodeBase64(prizeId, (qrCodeUrl) => {
       const phone = userPhone.value.trim();
@@ -82,17 +82,20 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
+      // Salva il QR code nella sessionStorage
+      sessionStorage.setItem("qrCodeData", qrCodeUrl);
+
+      // Link alla pagina del QR code
+      const qrCodePageLink = "qr-code-page.html"; // La pagina dove il QR code verrà mostrato
+
       const text = encodeURIComponent(`
         Ciao! Ho vinto alla slot del District Pub. Premio: ${resultMsg.textContent} 
         Puoi ritirare il premio mostrando questo QR code: 
-        ${qrCodeUrl} 
+        Visita il link per visualizzarlo: ${window.location.origin}/${qrCodePageLink} 
         Numero: ${phone}`);
-      
+
       const link = `https://wa.me/393793039278?text=${text}`;
       console.log("WhatsApp URL:", link); // Verifica l'URL generato
-
-      // Mostra l'URL per il debug
-      alert(`URL WhatsApp generato: ${link}`);
 
       whatsappLink.href = link;
       whatsappLink.classList.remove("hidden");
@@ -140,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
         generateQRCode(prizeId);  // Genera il QR code per il premio
         claimSection.classList.remove("hidden"); // Mostra la sezione per reclamare il premio
 
-        // Invia il messaggio di WhatsApp con il QR code
+        // Invia il messaggio di WhatsApp con il link alla pagina
         sendWhatsappMessageWithQRCode(prizeId);
       });
     } else {
