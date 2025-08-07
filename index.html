@@ -21,6 +21,19 @@
     <div id="claim-section" class="hidden">
       <h2>Hai vinto! Inserisci il numero per ritirare:</h2>
       <input type="tel" id="user-phone" placeholder="Il tuo numero" required />
+
+      <!-- ✅ Checkbox per il consenso -->
+      <div style="margin: 10px 0;">
+        <label>
+          <input type="checkbox" id="consent-checkbox" required>
+          Acconsento al trattamento dei miei dati per la gestione del premio.
+        </label>
+        <br/>
+        <small>
+          Leggi la <a href="/privacy.html" target="_blank">Privacy Policy</a>
+        </small>
+      </div>
+
       <button id="claim-button" class="btn">Invia messaggio al pub</button>
       <a id="whatsapp-link" class="btn hidden" target="_blank">Apri WhatsApp</a>
     </div>
