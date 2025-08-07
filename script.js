@@ -155,11 +155,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Invia i dati della vincita al backend Node.js
   function saveClaimToBackend(data) {
-    fetch("https://district-pub-backend.onrender.com/api/save-claim", {
+    fetch("https://district-pub-backend.onrender.com/api/claim", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
     });
   }
 });
+
 
