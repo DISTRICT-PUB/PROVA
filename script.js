@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const audioWin = document.getElementById("audio-win");
 
   // Variabile di configurazione per abilitare/disabilitare il blocco settimanale
-  const weeklyBlockEnabled = false;  // Imposta a 'false' per disabilitare il blocco settimanale
+  const weeklyBlockEnabled = true;  // Imposta a 'false' per disabilitare il blocco settimanale
 
   function getPrize() {
     const r = Math.random();
@@ -55,6 +55,20 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 200);
       }
     }, 75);
+  }
+
+  // Funzione per generare un identificatore unico per ogni premio
+  function generateUniqueCode() {
+    return 'VINCITA-' + Math.random().toString(36).substr(2, 9);  // Crea un ID univoco
+  }
+
+  // Funzione per generare un QR code per un premio
+  function generateQRCode(prizeId) {
+    const qrCodeContainer = document.getElementById("qr-code-container");
+    QRCode.toCanvas(qrCodeContainer, prizeId, function (error) {
+      if (error) console.error(error);
+    });
+    qrCodeContainer.classList.remove("hidden");  // Mostra il QR code
   }
 
   // Funzione per verificare se è passata una settimana dall'ultima giocata
@@ -90,9 +104,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (didWin) {
       const prize = getPrize();
+      const prizeId = generateUniqueCode();  // Genera un ID univoco per il premio
       spinReels(prize.symbol, () => {
         if (audioWin) audioWin.play(); // Suona il suono di vincita
         resultMsg.textContent = `🎉 Hai vinto: ${prize.prize}!`; // Mostra il premio vinto
+        generateQRCode(prizeId);  // Genera il QR code per il premio
         claimSection.classList.remove("hidden"); // Mostra la sezione per reclamare il premio
       });
     } else {
@@ -122,4 +138,3 @@ document.addEventListener("DOMContentLoaded", () => {
     whatsappLink.click(); 
   });
 });
-

@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>District Pub Slot</title>
   <link rel="stylesheet" href="style.css" />
+  <!-- Aggiungi la libreria QRCode -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 </head>
 <body>
   <div class="container">
@@ -22,6 +24,9 @@
       <button id="claim-button" class="btn">Invia messaggio al pub</button>
       <a id="whatsapp-link" class="btn hidden" target="_blank">Apri WhatsApp</a>
     </div>
+
+    <!-- Contenitore per il QR code -->
+    <div id="qr-code-container" class="hidden"></div>
   </div>
 
   <audio id="audio-spin" src="assets/spin.mp3"></audio>
