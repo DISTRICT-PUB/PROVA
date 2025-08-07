@@ -1,86 +1,23 @@
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Verifica Premio</title>
   <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      padding: 40px;
-    }
-    #status {
-      margin: 20px;
-      font-size: 20px;
-    }
-    #prize {
-      font-size: 24px;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    .used {
-      color: red;
-      font-weight: bold;
-    }
-    .valid {
-      color: green;
-      font-weight: bold;
-    }
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+    .hidden { display: none; }
+    #use-btn { margin-top: 20px; padding: 10px 20px; font-size: 16px; }
+    #qrcode { margin-top: 30px; }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
 </head>
 <body>
-  <h1>🎟️ Verifica Premio</h1>
-  <div id="status">Caricamento...</div>
-  <div id="prize"></div>
-  <button id="useBtn" style="display:none;">✅ Segna come usato</button>
+  <h1>🎰 District Pub</h1>
+  <p id="prize-message">⏳ Caricamento...</p>
+  <canvas id="qrcode" class="hidden"></canvas>
+  <button id="use-btn" class="hidden">Segna come usato</button>
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
-    const apiBase = "https://district-pub-backend.onrender.com/api";
-
-    const statusDiv = document.getElementById("status");
-    const prizeDiv = document.getElementById("prize");
-    const useBtn = document.getElementById("useBtn");
-
-    if (!id) {
-      statusDiv.textContent = "❌ QR non valido.";
-    } else {
-      fetch(`${apiBase}/claim/${id}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.error) {
-            statusDiv.innerHTML = "❌ QR non trovato.";
-          } else if (data.used) {
-            statusDiv.innerHTML = "<span class='used'>⚠️ Premio già usato</span>";
-            prizeDiv.textContent = data.prize;
-          } else {
-            statusDiv.innerHTML = "<span class='valid'>✅ Premio valido!</span>";
-            prizeDiv.textContent = data.prize;
-            useBtn.style.display = "inline-block";
-
-            useBtn.addEventListener("click", () => {
-              fetch(`${apiBase}/use-claim`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id })
-              }).then(() => {
-                statusDiv.innerHTML = "<span class='used'>✅ Premio segnato come usato</span>";
-                useBtn.style.display = "none";
-              });
-            });
-          }
-        })
-        .catch(() => {
-          statusDiv.textContent = "❌ Errore di connessione al server.";
-        });
-    }
-  </script>
+  <script src="claim.js"></script>
 </body>
 </html>
