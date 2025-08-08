@@ -30,8 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const audioWin = document.getElementById("audio-win");
 
   // 🔧 CONFIGURAZIONI DI BLOCCO GIOCATA
-  const singlePlayUntilDateEnabled = false; // true per abilitare il blocco fino al 25/08/2025
-  const weeklyBlockEnabled = false;         // true per bloccare una giocata ogni 7 giorni dopo il 25/08/2025
+  const singlePlayUntilDateEnabled = true; // true per abilitare il blocco fino al 25/08/2025
+  const weeklyBlockEnabled = true;         // true per bloccare una giocata ogni 7 giorni dopo il 25/08/2025
   const limitDate = new Date("2025-08-25T23:59:59");
 
   // Seleziona un premio casuale in base alle probabilità
