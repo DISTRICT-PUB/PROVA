@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     } else {
       spinReels("❌", () => {
-        resultMsg.textContent = "❌ Non hai vinto, Mandaci un messaggio e ti offriamo un Chupito";
+        resultMsg.textContent = "❌ Non hai vinto, Ritenta la fortuna settimana prossima ";
         claimSection.classList.remove("hidden");
       });
     }
