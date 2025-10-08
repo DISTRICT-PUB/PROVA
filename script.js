@@ -4,14 +4,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Pool dei premi con le relative probabilità
   const prizePool = [
-    { symbol: "🎟️", prize: "Sconto 10%", chance: 0.03 },
-    { symbol: "🎮", prize: "Partita ai giochi", chance: 0.25 },
-    { symbol: "🍷", prize: "Calice di vino", chance: 0.06 },
-    { symbol: "🍻", prize: "Birra piccola", chance: 0.30 },
-    { symbol: "🍺", prize: "Birra media", chance: 0.20 },
+    { symbol: "🥃", prize: "Chupito", chance: 0.25 },        // 25% - premio più comune
+    { symbol: "🎮", prize: "Partita ai giochi", chance: 0.20 }, // 20%
+    { symbol: "🍻", prize: "Birra piccola", chance: 0.15 },      // 15%
+    { symbol: "🍺", prize: "Birra media", chance: 0.10 },        // 10%
+    { symbol: "🍷", prize: "Calice di vino", chance: 0.05 },     // 5%
+    { symbol: "🎟️", prize: "Sconto 10%", chance: 0.02 }         // 2% - premio più raro
   ];
 
-  const winChance = 0.8; // Percentuale di possibilità di vincita
+  const winChance = 0.77; // Percentuale complessiva di possibilità di vincita
 
   // Selettori degli elementi della pagina
   const reels = [
