@@ -31,8 +31,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const audioWin = document.getElementById("audio-win");
 
   // 🔧 CONFIGURAZIONI DI BLOCCO GIOCATA
-  const singlePlayUntilDateEnabled = true; // true per abilitare il blocco fino al 25/08/2025
-  const weeklyBlockEnabled = false;         // true per bloccare una giocata ogni 7 giorni dopo il 25/08/2025
+  const singlePlayUntilDateEnabled = true;
+  const weeklyBlockEnabled = true;
   const limitDate = new Date("2025-08-25T23:59:59");
 
   // Seleziona un premio casuale in base alle probabilità
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
       acc += p.chance;
       if (r <= acc) return p;
     }
-    return prizePool[prizePool.length - 1]; // Default (fallback)
+    return prizePool[prizePool.length - 1];
   }
 
   // Anima la slot e poi mostra il simbolo vincente
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 75);
   }
 
-  // ✅ FUNZIONE BLOCCO GIOCATA
+  // ✅ BLOCCO GIOCATA
   function canPlay() {
     const now = new Date();
     const lastPlayDate = localStorage.getItem("lastPlayDate");
@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return true;
   }
 
-  // Quando si clicca su "GIRA"
+  // 🎰 GIRA
   spinBtn.addEventListener("click", () => {
     if (!canPlay()) return;
 
@@ -113,12 +113,11 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     } else {
       spinReels("❌", () => {
-        resultMsg.textContent = "❌ Non hai vinto, Ritenta la fortuna settimana prossima ";
-        claimSection.classList.remove("hidden");
+        resultMsg.textContent = "❌ Non hai vinto! Ritenta la prossima settimana 🍀";
+        claimSection.classList.add("hidden"); // 👉 Non mostra sezione dati
       });
     }
 
-    // Salva la data dell’ultima giocata
     const now = new Date();
     localStorage.setItem("lastPlayDate", now.toISOString());
 
@@ -127,9 +126,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 3000);
   });
 
-  // ✅ Quando si clicca su "Invia messaggio al pub"
+  // ✅ INVIO SU WHATSAPP
   claimBtn.addEventListener("click", () => {
-    // ✅ Controllo consenso privacy
     const consentGiven = document.getElementById("consent-checkbox")?.checked;
     if (!consentGiven) {
       alert("Devi acconsentire al trattamento dei dati per continuare.");
@@ -143,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const isWin = !prizeText.startsWith("❌");
 
     const uniqueId = generateUniqueId();
-    const qrLink = `https://district-pub.github.io/PROVA/claim.html?id=${uniqueId}`; // Link alla pagina con QR
+    const qrLink = `https://district-pub.github.io/PROVA/claim.html?id=${uniqueId}`;
 
     const text = encodeURIComponent(
       `Ciao! Ho vinto alla slot del District Pub 🎰\nPremio: ${prizeText}\nNumero: ${phone}\nQR per il ritiro: ${qrLink}`
@@ -154,7 +152,6 @@ document.addEventListener("DOMContentLoaded", () => {
     whatsappLink.classList.remove("hidden");
     whatsappLink.click();
 
-    // Salva la vincita sul backend (solo se è una vera vincita)
     if (isWin) {
       saveClaimToBackend({
         id: uniqueId,
@@ -166,12 +163,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Genera un ID univoco casuale
+  // Genera un ID univoco
   function generateUniqueId() {
     return Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
   }
 
-  // Invia i dati della vincita al backend Node.js
+  // ✅ Salva vincita nel backend
   function saveClaimToBackend(data) {
     console.log("Invio dati al backend:", data);
 
