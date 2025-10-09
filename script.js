@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 🔧 CONFIGURAZIONI DI BLOCCO GIOCATA
   const singlePlayUntilDateEnabled = true;
-  const weeklyBlockEnabled = false;
+  const weeklyBlockEnabled = true;
   const limitDate = new Date("2025-08-25T23:59:59");
 
   // Seleziona un premio casuale in base alle probabilità
