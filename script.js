@@ -37,14 +37,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Seleziona un premio casuale in base alle probabilità
   function getPrize() {
-    const r = Math.random();
-    let acc = 0;
-    for (let p of prizePool) {
-      acc += p.chance;
-      if (r <= acc) return p;
-    }
-    return prizePool[prizePool.length - 1];
+  const totalChance = prizePool.reduce((acc, p) => acc + p.chance, 0);
+  const r = Math.random() * totalChance;
+  let acc = 0;
+  for (let p of prizePool) {
+    acc += p.chance;
+    if (r <= acc) return p;
   }
+  return prizePool[prizePool.length - 1];
+}
 
   // Anima la slot e poi mostra il simbolo vincente
   function spinReels(targetSymbol, callback) {
